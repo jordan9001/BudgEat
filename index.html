@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Meal Plan</title>
+	<!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.js"></script>
+
+	<!-- Icons -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+</head>
+<body>
+	<ul id="main-tabs" class="tabs">
+		<li class="tab col s3"><a href="#calendar">Plan</a></li>
+		<li class="tab col s3"><a href="#recipes" class="active" id="main-tab-def">Recipes</a></li>
+		<li class="tab col s3"><a href="#ingredients">ingredients</a></li>
+	</ul>
+	<div id="calendar" class="col s12 keepvertfull" style="min-height: 100vh !important; overflow: auto;">
+		<div class="container">
+			<h1>Calendar</h1>
+		</div>
+	</div>
+	<div id="recipes" class="col s12 keepvertfull" style="min-height: 100vh !important; overflow: auto;">
+		<div class="container">
+			<h1>Recipes</h1>
+			<ul id="reclist" class="collapsible">
+				<li>
+					<div class="collapsible-header"><i class="material-icons">control_point</i>New Recipe</div>
+					<div class="collapsible-body">
+						<form class="col s12">
+							<div class="row">
+								<div class="input-field col s6">
+									<input id="rectitle" type="text"/>
+									<label for="rectitle">Title</label>
+								</div>
+								<div class="input-field col s6">
+									<input id="recserve" type="number" max="99" min="1" step="1" value="2"/>
+									<label for="recserve">Serves</label>
+								</div>
+								<table class="col s12">
+									<thead>
+										<tr>
+											<th></th><th>Name</th><th>Amount</th><th>Price</th>
+										</tr>
+									</thead>
+									<tbody id="recingtable">
+										<!-- Filled out by ingrediententry_t_ed -->
+										<tr>
+											<td>
+												<a id="recaddingbtn" class="btn-floating btn-small waves-effect waves-light">
+													<i class="material-icons">add</i>
+												</a>
+											</td>
+											<td></td><td></td><td></td>
+										</tr>
+									</tbody>
+								</table>
+								<div class="input-field col s12">
+									<textarea id="recnotes" class="materialize-textarea"></textarea>
+									<label for="recnotes">Notes</label>
+								</div>
+								<a id="recadd" class="waves-effect waves-light btn">
+									<i class="material-icons left">add_box</i>Save
+								</a>
+							</div>
+						</form>
+					</div>
+				</li>
+				<!-- Filled out by recipe_t -->
+			</ul>
+		</div>
+	</div>
+	<div id="ingredients" class="col s12 keepvertfull" style="min-height: 100vh !important; overflow: auto;">
+		<div class="container keepvertfull">
+			<h1>Ingredients</h1>
+			<ul id="inglist" class="collapsible">
+				<li>
+					<div class="collapsible-header"><i class="material-icons">control_point</i>New ingredient</div>
+					<div class="collapsible-body">
+						<form class="col s12">
+							<div class="row">
+								<div class="input-field col s12">
+									<input id="ingtitle" type="text"/>
+									<label for="ingtitle">Name</label>
+								</div>
+								<div class="input-field col s6">
+									<span class="prefix">$</span><input id="ingprice" type="number"/>
+									<label for="ingprice">Price</label>
+								</div>
+								<div class="input-field col s6">
+										<span class="prefix">/</span><input id="ingunit" type="text"></textarea>
+									<label for="ingunit">Unit</label>
+								</div>
+								<a id="ingadd" class="waves-effect waves-light btn">
+									<i class="material-icons left">add_box</i>Save
+								</a>
+							</div>
+						</form>
+					</div>
+				</li>
+				<!-- Filled out by ingredient_t -->
+			</ul>
+		</div>
+	</div>
+	
+	<!-- Templates -->
+	<template id="recipe_t">
+		<li class="recipe_t_entry">
+			<div class="collapsible-header">
+				<i class="material-icons">chevron_right</i><span class="rec_t_title">Title</span>
+			</div>
+			<div class="collapsible-body">
+				<div class="col s12">
+					<p>Cost: <span class="rec_t_cost">$x</span>.</p>
+					<p>Serves <span class="rec_t_serves">y</span>.</p>
+					<p><span class="rec_t_perserv">$z</span> / Serving.</p>
+				</div>
+				<table class="col s12">
+					<thead>
+						<tr>
+							<th>Name</th><th>Amount</th><th>Price</th>
+						</tr>
+					</thead>
+					<tbody class="rec_t_ingtab">
+						<!-- Filled out by ingrediententry_t -->
+					</tbody>
+				</table>
+				<blockquote class="col s12 rec_t_notes">
+					Notes here
+				</blockquote>
+				<div class="col s12">
+						<a class="btn-floating btn-small waves-effect waves-light">
+							<i class="material-icons">edit</i>
+						</a>
+						<a class="btn-floating btn-small waves-effect waves-light">
+							<i class="material-icons">delete_forever</i>
+						</a>
+					</div>
+			</div>
+		</li>
+	</template>
+
+	<template id="ingrediententry_t">
+		<tr>
+			<td>
+				<span>Name</span>
+			</td>
+			<td>
+				<span>Amount</span> <span>Units</span>
+			</td>
+			<td>
+				at <span>$x</span> / <span>Unit</span> = <span>$y</span>
+			</td>
+		</tr>
+	</template>
+
+	<template id="ingrediententry_t_ed">
+		<tr class="ingrediententry_t_ed_entry">
+			<td>
+				<a class="btn-floating btn-small waves-effect waves-light">
+					<i class="material-icons">remove_circle</i>
+				</a>
+			</td>
+			<td>
+				<div class="input-field inline fting-select">
+					<input class="ingname" type="text"/>
+					<label>Name</label>
+				</div>
+			</td>
+			<td>
+				<div class="input-field inline">
+					<input class="ingamount" type="number" min="0.0" value="1.0"/>
+					<label>Amount</label>
+				</div>
+				<span class="ingunits">Units</span>
+			</td>
+			<td>
+				at <span class="ingprice">$?</span> / <span class="ingunit">Unit</span> = <span class="ingpricep">$?</span>
+			</td>
+		</tr>
+	</template>
+
+	<template id="ingredient_t">
+		<li class="ingredient_t_entry">
+			<div class="collapsible-header">
+				<i class="material-icons">chevron_right</i><span>Title</span>
+			</div>
+			<div class="collapsible-body">
+				<div class="col s12">
+					<p><span>$0.00</span> per <span>Unit</span></p>
+				</div>
+				<div class="col s12">
+					<a class="btn-floating btn-small waves-effect waves-light">
+						<i class="material-icons">edit</i>
+					</a>
+					<a class="btn-floating btn-small waves-effect waves-light">
+						<i class="material-icons">delete_forever</i>
+					</a>
+				</div>
+			</div>
+		</li>
+	</template>
+
+	<script src="js/mealplan.js" defer></script>
+</body>
+</html>

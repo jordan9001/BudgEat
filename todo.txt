@@ -1,0 +1,15 @@
+Features:
+	Receipes tab
+		Collapsable sortable
+		Add or remove Recipes
+		Ingredients section
+		Text section
+	Month Plan tab
+		Callendar with +
+		Add titles of Recipes in your book
+		gets shopping costs
+
+
+when edit recipe, just remove it and put the into in add recipe section
+recipe form:
+	Title, ingredient table, area text
