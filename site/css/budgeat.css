@@ -1,0 +1,32 @@
+.tabcont {
+	min-height: 100vh !important;
+	overflow: auto;
+}
+
+.calcellh {
+	width: 10vw;
+}
+
+.calcell {
+	width: 15vw;
+	height: 12vw;
+	overflow-y: hidden;
+	vertical-align: top;
+	text-align: left;
+}
+
+.calsum {
+	width: 10vh;
+	text-align: center;
+	color: rgba(238,110,115,0.7);
+}
+
+.datenum {
+	font-weight: normal;
+	color: #26a69a;
+}
+
+.mealitem {
+	color: #414141;
+	font-weight: lighter;
+}

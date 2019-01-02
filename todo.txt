@@ -5,11 +5,12 @@ Features:
 		Ingredients section
 		Text section
 	Month Plan tab
-		Callendar with +
+		Calendar with +
 		Add titles of Recipes in your book
 		gets shopping costs
 
 
-when edit recipe, just remove it and put the into in add recipe section
-recipe form:
-	Title, ingredient table, area text
+Need to:
+	Add Calendar
+	Remove duplicated code (updating specific html nodes)
+	add/test save/load
