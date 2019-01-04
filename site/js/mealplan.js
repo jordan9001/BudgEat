@@ -67,20 +67,23 @@ class FTCalendar {
 
 
 		// set up getlist listener when date range changes
-		//TODO
-		/*
-			let file = new Blob(["data"], {type: "text/plain"});
-			let a = document.getElementById("getlist_btn");
-			let url = URL.createObjectURL(file);
-			a.href = url;
-			a.download = "List_date1_date2.txt";
-			document.body.appendChild(a);
-			a.click();
-			setTimeout(function() {
-				document.body.removeChild(a);
-				window.URL.revokeObjectURL(url);  
-			}, 0); 
-		*/
+		document.getElementById("getlist_btn").addEventListener("click", function() {
+			// make the text
+				/*
+				let file = new Blob(["data"], {type: "text/plain"});
+				let a = document.getElementById("getlist_btn");
+				let url = URL.createObjectURL(file);
+				a.href = url;
+				a.download = "List_date1_date2.txt";
+				document.body.appendChild(a);
+				a.click();
+				setTimeout(function() {
+					document.body.removeChild(a);
+					window.URL.revokeObjectURL(url);  
+				}, 0); 
+				*/
+		}, false);
+		
 	}
 
 	recalcCosts(recname, updateall=false) {
