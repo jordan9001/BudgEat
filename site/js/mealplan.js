@@ -6,7 +6,7 @@ const calKey = "calendar";
 
 class FTCalendar {
 	//
-	// calobj = {recipe="", servings=0, date=0}
+	// mealobj = {recipe="", servings=0, cdate=""}
 	//
 
 	constructor(ftool) {
@@ -15,12 +15,207 @@ class FTCalendar {
 		this.calarr = [];
 
 		// initialize the calendar numbers
+		let calnode = document.getElementById("calbod");
+		let daytemp = document.getElementById("calcell_t");
+		let sumtemp = document.getElementById("calsum_t");
+		for (let week = 0; week < 5; week++) {
+			let row = document.createElement('tr');
+			for (let day = 0; day < 7; day++) {
+				let clone = document.importNode(daytemp.content, true);
+				row.appendChild(clone);
+			}
+			row.appendChild(document.importNode(sumtemp.content, true));
+			calnode.appendChild(row);
+		}
+
+		
+		this.mondayfirst = true;
+		let d = new Date();
+
+		d.setDate(d.getDate() - ((d.getDay() + 6)%7));
+
+		let dates = calnode.querySelectorAll(".datenum");
+
+		dates.forEach(function(el) {
+			el.textContent = d.getDate();
+			el.dataset.cdate = ""+
+							d.getFullYear() +"-"+
+							("" + (d.getMonth() + 1)).padStart(2, '0') +"-"+
+							(""+d.getDate()).padStart(2, '0');
+			d.setDate(d.getDate() + 1);
+		});
+
+		let costs = calnode.querySelectorAll(".daysum");
+		costs.forEach(function(el) {
+			el.textContent = "";
+		});
+
+		let weekcosts = calnode.querySelectorAll(".calsum");
+		weekcosts.forEach(function(el) {
+			el.textContent = "$0.00";
+		});
+
+		// set up add meal listener
+		let that = this;
+		document.getElementById("addmeal_btn").addEventListener("click", function() {
+			let cdate = document.getElementById("addmeal_date").value;
+			let servings = parseFloat(parseFloat(document.getElementById("addmeal_serv").value).toFixed(2));
+			let recipe = document.getElementById("addmeal_rec").value;
+			let obj = {recipe: recipe, servings: servings, cdate: cdate};
+			that.add(obj);
+		}, false);
+
+
+		// set up getlist listener when date range changes
+		//TODO
+		/*
+			let file = new Blob(["data"], {type: "text/plain"});
+			let a = document.getElementById("getlist_btn");
+			let url = URL.createObjectURL(file);
+			a.href = url;
+			a.download = "List_date1_date2.txt";
+			document.body.appendChild(a);
+			a.click();
+			setTimeout(function() {
+				document.body.removeChild(a);
+				window.URL.revokeObjectURL(url);  
+			}, 0); 
+		*/
 	}
 
 	recalcCosts(recname, updateall=false) {
-		//TODO
-		// thie recipe has updated
-		// find all uses of it and update costs
+		// lazy way
+		// ignore recname, just do all the prices
+		let cal = document.getElementById("calbod");
+
+		let that = this;
+		// for each week
+		let weeks = cal.querySelectorAll("tr");
+		weeks.forEach(function(el) {
+			let days = el.querySelectorAll(".calcell");
+			let weekcost = 0;
+			// for each day
+			days.forEach(function(dayel) {
+				let meals = dayel.querySelectorAll(".calmealname");
+				let daycost = 0;
+				// for each meal
+				meals.forEach(function(mealel) {
+					let s = mealel.textContent;
+					let recname = s.substring(0, s.lastIndexOf('('))
+					let servings = s.substring(s.lastIndexOf('('))
+					servings = parseFloat(servings.substring(1, servings.length - 1));
+
+					let mealcost = that.ftool.recipes.cost(recname, servings);
+					if (mealcost === null) {
+						daycost = null;
+						weekcost = null;
+					} else {
+						if (daycost != null) {
+							daycost += mealcost;
+						}
+						if (weekcost != null) {
+							weekcost += mealcost;
+						}
+					}
+				});
+
+				let daycostel = dayel.querySelector(".daysum");
+
+				if (daycost === null) {
+					daycostel.textContent = "???";
+				} else if (daycost === 0) {
+					daycostel.textContent = "";
+				} else {
+					daycostel.textContent = "$" + daycost.toFixed(2);
+				}
+			});
+
+			let weekcostel = el.querySelector(".calsum");
+
+			if (weekcost === null) {
+				weekcostel.textContent = "???";
+			} else if (weekcost === 0) {
+				weekcostel.textContent = "";
+			} else {
+				weekcostel.textContent = "$" + weekcost.toFixed(2);
+			}
+		});
+
+		
+	}
+
+	addlists(mealobj) {
+		// add to the full list
+		let tmplt = document.querySelector('#meal_t');
+		// get the right parent
+		let cells = document.querySelectorAll(".calcell");
+		let parnt = null;
+		cells.forEach(function(el) {
+			if (el.querySelector('.datenum').dataset.cdate === mealobj.cdate) {
+				parnt = el.querySelector('ul');
+			}
+		});
+		
+		if (parnt == null) {
+			// out of date range
+			console.log("Recipe for date out of calendar "+ mealobj.cdate);
+			return;
+		}
+
+		let clone = document.importNode(tmplt.content, true);
+		// fill out the template
+		
+		clone.querySelector("span").textContent = mealobj.recipe + "(" + mealobj.servings + ")";
+
+		// enable the button
+		let cli = clone.querySelector("li");
+		let that = this;
+		clone.querySelector('a').addEventListener("click", function() {
+			parnt.removeChild(cli);
+			// remove the old entry
+			that.rem(mealobj);
+		}, false);
+
+		parnt.appendChild(clone);
+	}
+
+	add(mealobj) {
+		// Do checks
+		mealobj.recipe = mealobj.recipe.trim();
+		if (mealobj.recipe === "" || mealobj.recipe == undefined) {
+			M.toast({html:"Recipe name required", classes:"red"});
+			return;
+		}
+		if (isNaN(mealobj.servings)) {
+			M.toast({html:"Invalid servings served", classes:"red"});
+			return;
+		}
+		let d = Date(mealobj.cdate);
+		if (mealobj.cdate.trim() === "" || d < Date.now()) {
+			M.toast({html:"Invalid date", classes:"red"});
+			return;
+		}
+
+		this.calarr.push(mealobj);
+
+		this.addlists(mealobj);
+
+		this.recalcCosts("", true);
+
+		this.doSave();
+	}
+
+	rem(mealobj) {
+		for (let i = 0; i < this.calarr.length; i++) {
+			if (mealobj === this.calarr[i]) {
+				this.calarr.splice(i, 1);
+				break;
+			}
+		}
+		
+		this.recalcCosts("", true);
+
+		this.doSave();
 	}
 
 	loadSaved() {
@@ -30,6 +225,14 @@ class FTCalendar {
 		}
 
 		this.calarr = JSON.parse(saved);
+
+		// add them all
+		let that = this;
+		this.calarr.forEach(function(mealobj) {
+			that.addlists(mealobj);
+		});
+
+		this.recalcCosts("", true);
 	}
 
 	doSave() {
@@ -190,6 +393,28 @@ class FTRecipes {
 		});
 		// update the recipe being added as well
 
+	}
+
+	cost(recname, servings) {
+		let recobj = this.get(recname);
+		if (recobj == null) {
+			return null;
+		}
+
+		let cost = 0;
+		for (let i = 0; i < recobj.ing.length; i++) {
+			let ing = this.ftool.ingredients.get(recobj.ing[i].name);
+			if (ing === null) {
+				cost = null;
+				return null;
+			}
+
+			cost += ing.price * recobj.ing[i].amount;
+		}
+
+		cost = cost * servings / recobj.serves;
+
+		return cost;
 	}
 
 	addlists(recobj) {

@@ -9,8 +9,10 @@
 
 .calcell {
 	width: 15vw;
-	height: 12vw;
-	overflow-y: hidden;
+	height: 9vw;
+	overflow-y: auto;
+	overflow-x: hidden;
+	overflow-wrap: break-word;
 	vertical-align: top;
 	text-align: left;
 }
@@ -21,12 +23,23 @@
 	color: rgba(238,110,115,0.7);
 }
 
+.daysum {
+	color: rgba(238,110,115,0.6);
+	text-align: right;
+	vertical-align: top;
+	font-size:smaller;
+}
+
 .datenum {
 	font-weight: normal;
 	color: #26a69a;
 }
 
-.mealitem {
-	color: #414141;
+.floatmealbtn {
+	color: #1b1b1b;
+}
+
+.calmealname {
 	font-weight: lighter;
+	font-size: small;
 }

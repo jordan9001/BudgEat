@@ -37,131 +37,8 @@
 							<th class="center-align"></th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="calsum">$100</th>
-						</tr>
-						<tr>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="calsum">$100</th>
-						</tr>
-						<tr>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="calsum">$100</th>
-						</tr>
-						<tr>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="hoverable calcell">
-									<div class="datenum">12</div>
-									<ul></ul>
-								</th>
-								<th class="calsum">$100</th>
-						</tr>
+					<tbody id="calbod">
+						<!-- Filled by rows and calcell_ts-->
 					</tbody>
 				</table>
 			</div>
@@ -192,7 +69,7 @@
 					<form>
 						<div class="row">
 							<div class="input-field col s4">
-								<a id="addmeal_btn" class="waves-effect waves-light btn"><i class="material-icons left">shopping_cart</i>Get List</a>
+								<a id="getlist_btn" class="waves-effect waves-light btn"><i class="material-icons left">shopping_cart</i>Get List</a>
 							</div>
 							<div class="input-field col s4">
 								<input id="getlist_sdate" type="date"/>
@@ -292,8 +169,20 @@
 	</div>
 	
 	<!-- Templates -->
-	<template id="planned_t">
-		
+	<template id="calcell_t">
+		<td class="hoverable calcell">
+			<div class="row"><div class="datenum col s4">12</div><div class="daysum col s8">$20.00</div></div>
+			<ul></ul>
+		</td>
+	</template>
+	<template id="calsum_t">
+		<td class="calsum">$100</th>
+	</template>
+	<template id="meal_t">
+		<li>
+			<a class="waves-effect waves-light floatmealbtn">-</a>
+			<span class="calmealname">Meal Name</span>
+		</li>
 	</template>
 	<template id="recipe_t">
 		<li class="recipe_t_entry">
