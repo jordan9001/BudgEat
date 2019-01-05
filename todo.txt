@@ -1,16 +1,7 @@
 Features:
-	Receipes tab
-		Collapsable sortable
-		Add or remove Recipes
-		Ingredients section
-		Text section
-	Month Plan tab
-		Calendar with +
-		Add titles of Recipes in your book
-		gets shopping costs
-
-
-Need to:
-	Add Calendar
-	Remove duplicated code (updating specific html nodes)
-	add/test save/load
+	Autocomplete
+	Red squiggles when I don't know a choice
+	share with others
+	share ingredients
+		json files that can be dragged/dropped in?
+	just better

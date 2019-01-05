@@ -22,6 +22,10 @@ class FTCalendar {
 			let row = document.createElement('tr');
 			for (let day = 0; day < 7; day++) {
 				let clone = document.importNode(daytemp.content, true);
+				let hvrble = clone.querySelector(".hoverable");
+				hvrble .addEventListener("click", function() {
+					document.getElementById("addmeal_date").value = hvrble.querySelector(".datenum").dataset.cdate;
+				}, false);
 				row.appendChild(clone);
 			}
 			row.appendChild(document.importNode(sumtemp.content, true));
@@ -68,20 +72,122 @@ class FTCalendar {
 
 		// set up getlist listener when date range changes
 		document.getElementById("getlist_btn").addEventListener("click", function() {
-			// make the text
-				/*
-				let file = new Blob(["data"], {type: "text/plain"});
-				let a = document.getElementById("getlist_btn");
-				let url = URL.createObjectURL(file);
-				a.href = url;
-				a.download = "List_date1_date2.txt";
-				document.body.appendChild(a);
-				a.click();
-				setTimeout(function() {
-					document.body.removeChild(a);
-					window.URL.revokeObjectURL(url);  
-				}, 0); 
-				*/
+			let bdstr = document.getElementById("getlist_sdate").value;
+			let edstr = document.getElementById("getlist_edate").value;
+
+			if (bdstr.trim() === "" || edstr.trim() === "") {
+				M.toast({html:"Invalid date for Shopping List", classes:"red"});
+				return;
+			}
+
+			let bd = new Date(bdstr);
+			let ed = new Date(edstr);
+			
+			if (bd.toString() === "Invalid Date") {
+				M.toast({html:"Invalid Start Date for Shopping List", classes:"red"});
+				return;
+			}
+
+			if (ed.toString() === "Invalid Date") {
+				M.toast({html:"Invalid End Date for Shopping List", classes:"red"});
+				return;
+			}
+
+			if (ed < bd) {
+				M.toast({html:"Invalid date range for Shopping List", classes:"red"});
+				return;
+			}
+
+			let inglist = {};
+			// dictionary by ing name {Bananas: {amount: 7.2, unit: "Banana", priceper: 0.4}
+
+			that.calarr.forEach(function(mealobj) {
+				let rd = new Date(mealobj.cdate);
+
+				if (rd <= ed && rd >= bd) {
+					let recobj = that.ftool.recipes.get(mealobj.recipe);
+					if (recobj === null) {
+						console.log("Unable to get recipe \""+mealobj.recipe +"\" for list");
+					} else {
+						// go through the ingredients and add them all to the thing
+						recobj.ing.forEach(function(ingent) {
+							
+							let ingobj = that.ftool.ingredients.get(ingent.name);
+
+							if (inglist[ingent.name] === undefined) {
+								let unit = "unit";
+								let price = 0.0;
+								if (ingobj !== null) {
+									unit = ingobj.unit;
+									price = ingobj.price;
+								}
+								inglist[ingent.name] = {amount: 0.0, unit: unit, priceper: price};
+							}
+
+							inglist[ingent.name].amount += (ingent.amount * mealobj.servings / recobj.serves);
+						});
+					}
+				}
+			});
+
+			// now with our list we can build the text
+			//
+			//	Shopping list (05/08 - 08/05)			 Est. Total = $2.88
+			//    - Bananas: 7.2 Banana            @ $0.40 / Banana = $2.88
+			//
+
+			// left side of the list
+			let shopl = ["Shopping List ("+ bd.toDateString() +" - " + ed.toDateString() +")"]
+			// right side
+			let shopr = ["Est. Total = $"]
+			// that way we can give the proper spacing on stuff
+
+			let totcost = 0.0;
+			let keys = Object.keys(inglist);
+			let maxl = shopl[0].length;
+			let maxr = shopr[0].length + 6;
+			for (let i = 0; i < keys.length; i++) {
+				let cleanamt = parseFloat(inglist[keys[i]].amount.toFixed(2));
+				let unit = inglist[keys[i]].unit;
+				let l = "  - "+ keys[i] +": "+ cleanamt +" "+ unit +"s";
+				let cost = inglist[keys[i]].priceper * cleanamt;
+				totcost += cost;
+				let r = "@ $"+ inglist[keys[i]].priceper.toFixed(2) +" / "+ unit +" = $"+ cost.toFixed(2);
+			
+				if (l.length > maxl) {
+					maxl = l.length;
+				}
+				if (r.length > maxr) {
+					maxr = r.length;
+				}
+				shopl.push(l);
+				shopr.push(r);
+			}
+			shopr[0] += totcost.toFixed(2);
+			if (shopr[0].length > maxr) {
+				maxr = shopr[0];
+			}
+
+			let ftext = "";
+			let linlen = maxl + maxr + 1;
+			for (let i = 0; i < shopl.length; i++) {
+				let padcount = linlen - (shopl[i].length + shopr[i].length);
+				let l = shopl[i] + " ".repeat(padcount) + shopr[i];
+				ftext += l + "\r\n";
+			}
+
+			let file = new Blob([ftext], {type: "text/plain"});
+			let a = document.createElement('a');
+			let url = URL.createObjectURL(file);
+			a.href = url;
+			a.download = "List_"+ (bd.getMonth()+1) +"/"+ (bd.getUTCDate()) +"-"+ (ed.getMonth()+1) +"/"+ (ed.getUTCDate()) +".txt";
+			document.body.appendChild(a);
+			a.click();
+			setTimeout(function() {
+				document.body.removeChild(a);
+				window.URL.revokeObjectURL(url);  
+			}, 0); 
+			
 		}, false);
 		
 	}
